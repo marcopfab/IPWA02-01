@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Testfall')}"></head>
+<body>
+<nav th:replace="~{layout :: nav}"></nav>
+
+<div class="container" style="max-width: 640px;">
+    <h1 class="h3 mb-1">Neuer Testfall</h1>
+    <p class="text-muted mb-4">Anforderung: <span th:text="${requirement.title}">Titel</span></p>
+
+    <form th:action="@{/testcases/save}" th:object="${testCase}" method="post">
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{requirement}"/>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Titel *</label>
+            <input type="text" class="form-control" th:field="*{title}"
+                   th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'"/>
+            <div class="invalid-feedback" th:errors="*{title}">Titel fehlt.</div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Testschritte</label>
+            <textarea class="form-control" rows="5" th:field="*{steps}"
+                      placeholder="Zeilenweise Beschreibung der auszuführenden Aktionen"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Erwartetes Ergebnis</label>
+            <textarea class="form-control" rows="3" th:field="*{expectedResult}"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Speichern</button>
+        <a th:href="@{/testcases(reqId=${requirement.id})}" class="btn btn-secondary">Abbrechen</a>
+    </form>
+</div>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

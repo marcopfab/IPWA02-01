@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Testläufe')}"></head>
+<body>
+<nav th:replace="~{layout :: nav}"></nav>
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3 mb-0">Testläufe</h1>
+        <a class="btn btn-primary" th:href="@{/testruns/new}">+ Neuer Testlauf</a>
+    </div>
+
+    <table class="table table-striped align-middle">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Beschreibung</th>
+            <th>Startdatum</th>
+            <th>Status</th>
+            <th>Zugeordnete Testfälle</th>
+            <th>Aktionen</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tr : ${testRuns}">
+            <td th:text="${tr.name}">Name</td>
+            <td th:text="${tr.description}">Beschreibung</td>
+            <td th:text="${tr.startDate}">Datum</td>
+            <td><span class="badge bg-secondary" th:text="${tr.status.displayName}">Status</span></td>
+            <td th:text="${assignmentCounts.get(tr.id)}">0</td>
+            <td>
+                <a class="btn btn-sm btn-outline-primary" th:href="@{/testruns/{id}/assign(id=${tr.id})}">Zuweisen</a>
+                <a class="btn btn-sm btn-outline-secondary" th:href="@{/testruns/{id}/edit(id=${tr.id})}">Bearbeiten</a>
+            </td>
+        </tr>
+        <tr th:if="${testRuns.isEmpty()}">
+            <td colspan="6" class="text-muted text-center">Noch keine Testläufe angelegt.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

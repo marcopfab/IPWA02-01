@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Zuweisung')}"></head>
+<body>
+<nav th:replace="~{layout :: nav}"></nav>
+
+<div class="container">
+    <h1 class="h3 mb-1">Zuweisung</h1>
+    <p class="text-muted mb-4">Testlauf: <span th:text="${testRun.name}">Name</span></p>
+
+    <div class="alert alert-danger" th:if="${error}" th:text="${error}">Fehler</div>
+
+    <div class="card mb-4" style="max-width: 640px;">
+        <div class="card-body">
+            <h2 class="h5 card-title">Testfall zuweisen</h2>
+            <form th:action="@{/testruns/{id}/assign(id=${testRun.id})}" method="post" class="row g-2">
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Testfall</label>
+                    <select name="testCaseId" class="form-select" required>
+                        <option th:each="tc : ${unassignedTestCases}" th:value="${tc.id}" th:text="${tc.title}"></option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-semibold">Tester:in</label>
+                    <input type="text" name="testerName" class="form-control" required/>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary"
+                            th:disabled="${unassignedTestCases.isEmpty()}">Zuweisen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <h2 class="h5">Vorhandene Zuweisungen</h2>
+    <table class="table table-striped align-middle">
+        <thead>
+        <tr>
+            <th>Testfall</th>
+            <th>Tester:in</th>
+            <th>Ergebnis</th>
+            <th>Aktionen</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="a : ${assignments}">
+            <td th:text="${a.testCase.title}">Testfall</td>
+            <td th:text="${a.testerName}">Tester</td>
+            <td>
+                <span th:if="${a.result == null}" class="text-muted">– ausstehend</span>
+                <span th:if="${a.result != null and a.result.result.name() == 'PASSED'}" class="text-success">✓ PASSED</span>
+                <span th:if="${a.result != null and a.result.result.name() == 'FAILED'}" class="text-danger">✗ FAILED</span>
+                <span th:if="${a.result != null and a.result.result.name() == 'BLOCKED'}" class="text-warning">⁉ BLOCKED</span>
+                <span th:if="${a.result != null and a.result.result.name() == 'NOT_EXECUTED'}" class="text-muted">NOT_EXECUTED</span>
+            </td>
+            <td>
+                <a class="btn btn-sm btn-outline-primary" th:href="@{/results/new(assignmentId=${a.id})}">Ergebnis erfassen</a>
+                <form th:if="${a.result == null}" th:action="@{/testruns/{id}/assign/{aid}/delete(id=${testRun.id},aid=${a.id})}"
+                      method="post" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Entfernen</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${assignments.isEmpty()}">
+            <td colspan="4" class="text-muted text-center">Noch keine Zuweisungen für diesen Testlauf.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/testruns}" class="btn btn-secondary">Zurück zu den Testläufen</a>
+</div>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

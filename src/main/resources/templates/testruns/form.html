@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Testlauf')}"></head>
+<body>
+<nav th:replace="~{layout :: nav}"></nav>
+
+<div class="container" style="max-width: 640px;">
+    <h1 class="h3 mb-4">Testlauf</h1>
+
+    <form th:action="@{/testruns/save}" th:object="${testRun}" method="post">
+        <input type="hidden" th:field="*{id}"/>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Name *</label>
+            <input type="text" class="form-control" th:field="*{name}"
+                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"/>
+            <div class="invalid-feedback" th:errors="*{name}">Name fehlt.</div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Beschreibung</label>
+            <textarea class="form-control" rows="3" th:field="*{description}"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Startdatum</label>
+            <input type="date" class="form-control" th:field="*{startDate}"/>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Status</label>
+            <select class="form-select" th:field="*{status}">
+                <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.displayName}"></option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Speichern</button>
+        <a th:href="@{/testruns}" class="btn btn-secondary">Abbrechen</a>
+    </form>
+</div>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

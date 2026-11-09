@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Anforderung')}"></head>
+<body>
+<nav th:replace="~{layout :: nav}"></nav>
+
+<div class="container" style="max-width: 640px;">
+    <h1 class="h3 mb-4">Anforderung</h1>
+
+    <!-- requirements/form.html (Ausschnitt gemäß Kapitel 3.5) -->
+    <form th:action="@{/requirements/save}" th:object="${requirement}" method="post">
+        <input type="hidden" th:field="*{id}"/>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Titel *</label>
+            <input type="text" class="form-control" th:field="*{title}"
+                   th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'"/>
+            <div class="invalid-feedback" th:errors="*{title}">Titel fehlt.</div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Beschreibung</label>
+            <textarea class="form-control" rows="4" th:field="*{description}"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Status</label>
+            <select class="form-select" th:field="*{status}">
+                <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.displayName}"></option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Speichern</button>
+        <a th:href="@{/requirements}" class="btn btn-secondary">Abbrechen</a>
+    </form>
+</div>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>

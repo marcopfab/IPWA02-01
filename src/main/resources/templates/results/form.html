@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(title='Testergebnis')}"></head>
+<body>
+<nav th:replace="~{layout :: nav}"></nav>
+
+<div class="container" style="max-width: 640px;">
+    <h1 class="h3 mb-4">Testergebnis erfassen</h1>
+
+    <div class="mb-3">
+        <label class="form-label fw-semibold">Testfall</label>
+        <input type="text" class="form-control" readonly th:value="${assignment.testCase.title}"/>
+    </div>
+    <div class="mb-3">
+        <label class="form-label fw-semibold">Testschritte</label>
+        <textarea class="form-control" rows="4" readonly th:text="${assignment.testCase.steps}"></textarea>
+    </div>
+    <div class="mb-3">
+        <label class="form-label fw-semibold">Erwartetes Ergebnis</label>
+        <textarea class="form-control" rows="2" readonly th:text="${assignment.testCase.expectedResult}"></textarea>
+    </div>
+
+    <form th:action="@{/results/save}" method="post">
+        <input type="hidden" name="assignmentId" th:value="${assignment.id}"/>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Ergebnis</label>
+            <select name="result" class="form-select">
+                <option th:each="r : ${results}" th:value="${r}" th:text="${r.displayName}"></option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Kommentar</label>
+            <textarea name="comment" class="form-control" rows="3"
+                      placeholder="Fehlerdetails oder Hinweise (optional)"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Speichern</button>
+        <a th:href="@{/testruns/{id}/assign(id=${assignment.testRun.id})}" class="btn btn-secondary">Abbrechen</a>
+    </form>
+</div>
+
+<footer th:replace="~{layout :: footer}"></footer>
+</body>
+</html>
